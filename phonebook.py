@@ -11,9 +11,10 @@ class Menu:
     def create_table(self, conn):
         query = f"""CREATE TABLE IF NOT EXISTS {self.table} (
             ContactID INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name VARCHAR(255),
-            Email VARCHAR(255),
-            Phone_number VARCHAR(255),
+            Name VARCHAR(50),
+            Phone_number INTEGER(50),
+            Address VARCHAR(100),
+            Email VARCHAR(50),
             Birthday DATE
         );"""
         cur = conn.cursor()
@@ -30,8 +31,9 @@ class Menu:
             [
                 "ContactID",
                 "Name",
+                "Phone number",
+                "Address",
                 "Email",
-                "Phone_number",
                 "Birthday"
             ]
         )
@@ -41,11 +43,12 @@ class Menu:
     def add_one(self, conn, *args):
         query = f"""INSERT INTO {self.table} (
             Name,
-            Email,
             Phone_number,
+            Address,
+            Email,
             Birthday
         )
-            VALUES (?, ?, ?, ?);"""
+            VALUES (?, ?, ?, ?, ?);"""
         cur = conn.cursor()
         cur.execute(query, args)
         conn.commit()
@@ -53,7 +56,7 @@ class Menu:
         print(f"{args[0]} has been sucessfully added to your phonebook.\n{self.search_contact(conn, args[0])}")
 
     def search_contact(self, conn, name: str):
-        query = f"""SELECT ContactID, Name, Email, Phone_number, Birthday FROM {self.table} WHERE name=?;"""
+        query = f"""SELECT ContactID, Name, Phone_number, Address, Email, Birthday FROM {self.table} WHERE name=?;"""
         cur = conn.cursor()
         cur.execute(query, (name,))
         result = cur.fetchone()
@@ -62,8 +65,9 @@ class Menu:
             [
                 "ContactID",
                 "Name",
-                "Email",
                 "Phone_number",
+                "Address",
+                "Email", 
                 "Birthday"
             ]
         )
@@ -74,7 +78,7 @@ class Menu:
             return "Contact not found."
     
     def search_id(self, conn, id: int):
-        query = f"""SELECT ContactID, Name, Email, Phone_number, Birthday FROM {self.table} WHERE ContactID=?;"""
+        query = f"""SELECT ContactID, Name, Phone_number, Address, Email, Birthday FROM {self.table} WHERE ContactID=?;"""
         cur = conn.cursor()
         cur.execute(query, (id,))
         result = cur.fetchone()
@@ -83,8 +87,9 @@ class Menu:
             [
                 "ContactID",
                 "Name",
+                "Phone number",
+                "Address",
                 "Email",
-                "Phone_number",
                 "Birthday"
             ]
         )
@@ -97,15 +102,17 @@ class Menu:
     def update_contact(self, conn, **fields):
         query = f"""UPDATE {self.table} SET
             Name=?,
-            Email=?,
             Phone_number=?,
+            Address=?,
+            Email=?,
             Birthday=?
             WHERE ContactID=?;"""
 
         values = (
             fields["name"],
-            fields["email"],
             fields["phone_number"],
+            fields["address"],
+            fields["email"],
             fields["birthday"],
             fields["contactid"],
         )
@@ -154,11 +161,12 @@ Please choose an option:
             # [2] - add a contact
             elif option == "2":
                 name = input("Name? ").title()
-                email = input("Email? ")
                 phone_number = input("Phone number? ")
+                address = input("Address? ")
+                email = input("Email? ")
                 birthday = input("Birthday (YYYY-MM-DD)? ")
 
-                menu.add_one(conn, name, email, phone_number, birthday)
+                menu.add_one(conn, name, phone_number, address, email, birthday)
             
             # [3] - search a contact
             elif option == "3":
@@ -173,11 +181,12 @@ Please choose an option:
                     if menu.search_id(conn, searched) != "Contact not found.":
                         menu.update_contact(
                             conn,
-                            name=input("New name? ").title(),
-                            email=input("New email? "),
-                            phone_number=input("New phone number? "),
-                            birthday=input("New birthday (YYYY-MM-DD)? "),
-                            contactid=searched,
+                            name = input("New name? ").title(),
+                            phone_number = input("New phone number? "),
+                            address = input("New address? "),
+                            email = input("New email? "),
+                            birthday = input("New birthday (YYYY-MM-DD)? "),
+                            contactid = searched,
                         )
                         print()
                         print("Contact successfully updated.")
