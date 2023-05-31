@@ -31,7 +31,7 @@ To run the Phonebook Application, follow these steps:
 - **Delete a Contact**: Delete a contact from the phonebook by providing the contact ID.
 
 ## Database
-The application uses a SQLite database to store contact information. The database file is named '**phone.db**' and is automatically created if it does not exist. The '**phonebook**' table is used to store the contact records, including fields such as '**ContactID**', '**Name**', '**Email**', '**Phone_number**', and '**Birthday**'. The table is created automatically if it does not exist.  
+The application uses a SQLite database to store contact information. The database file is named '**phone.db**' and is automatically created if it does not exist. The '**phonebook**' table is used to store the contact records, including fields such as '**ContactID**', '**Name**', '**Phone_number**', '**Address**', '**Email**', and '**Birthday**'. The table is created automatically if it does not exist.  
 
 ---
 Feel free to modify this README file as per your requirements. You can provide additional instructions, documentation, or screenshots to make it more comprehensive and user-friendly.
