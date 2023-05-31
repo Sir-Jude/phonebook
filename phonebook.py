@@ -65,7 +65,7 @@ class Menu:
             [
                 "ContactID",
                 "Name",
-                "Phone_number",
+                "Phone number",
                 "Address",
                 "Email", 
                 "Birthday"

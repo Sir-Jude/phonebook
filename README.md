@@ -33,5 +33,8 @@ To run the Phonebook Application, follow these steps:
 ## Database
 The application uses a SQLite database to store contact information. The database file is named '**phone.db**' and is automatically created if it does not exist. The '**phonebook**' table is used to store the contact records, including fields such as '**ContactID**', '**Name**', '**Phone_number**', '**Address**', '**Email**', and '**Birthday**'. The table is created automatically if it does not exist.  
 
+## License
+This project is licensed under a Creative Commons Attribution ShareAlike 4.0 International License.
+
 ---
 Feel free to modify this README file as per your requirements. You can provide additional instructions, documentation, or screenshots to make it more comprehensive and user-friendly.
