@@ -3,9 +3,6 @@ import sqlite3
 from prettytable import PrettyTable
 
 
-# Option 5 says contact has been deleted even though the phonebook is empty
-# - SOLUTION: check before if the cntact exists
-
 class Menu:
     def __init__(self, database, table) -> None:
         self.database = database
