@@ -101,20 +101,20 @@ class Menu:
 
     def update_contact(self, conn, **fields):
         query = f"""UPDATE {self.table} SET
-            Name=?,
-            Phone_number=?,
-            Address=?,
-            Email=?,
-            Birthday=?
+            Name=CASE WHEN ? = '' THEN Name ELSE ? END,
+            Phone_number=CASE WHEN ? = '' THEN Phone_number ELSE ? END,
+            Address=CASE WHEN ? = '' THEN Address ELSE ? END,
+            Email=CASE WHEN ? = '' THEN Email ELSE ? END,
+            Birthday=CASE WHEN ? = '' THEN Birthday ELSE ? END
             WHERE ContactID=?;"""
 
         values = (
-            fields["name"],
-            fields["phone_number"],
-            fields["address"],
-            fields["email"],
-            fields["birthday"],
-            fields["contactid"],
+            fields.get("name", ""),
+            fields.get("phone_number", ""),
+            fields.get("address", ""),
+            fields.get("email", ""),
+            fields.get("birthday", ""),
+            fields.get("contactid", ""),
         )
 
         cur = conn.cursor()
@@ -123,6 +123,7 @@ class Menu:
             conn.commit()
         except:
             print("Error occurred.")
+
 
     def delete_contact(self, conn, id: int):
         query = f"""DELETE FROM {self.table} WHERE ContactID=?;"""
@@ -142,16 +143,16 @@ def main():
         
         while option != "x":
             system("clear")
-            option = input(
-"""
-Please choose an option:
-[1] - show contacts
+            option = input("""Please select an option:
+                           
+[1] - show all the contacts
 [2] - add a contact
 [3] - search a contact
 [4] - update a contact
 [5] - delete a contact
 [x] - Exit
-""")
+
+Selected option: """)
             print()
 
             # [1] - show contacts
