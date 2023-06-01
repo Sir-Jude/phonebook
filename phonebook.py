@@ -12,7 +12,7 @@ class Menu:
         query = f"""CREATE TABLE IF NOT EXISTS {self.table} (
             ContactID INTEGER PRIMARY KEY AUTOINCREMENT,
             Name VARCHAR(50),
-            Phone_number INTEGER(50),
+            Phone_number VARCHAR(50),
             Address VARCHAR(100),
             Email VARCHAR(50),
             Birthday DATE
@@ -22,7 +22,7 @@ class Menu:
         conn.commit()
     
     def show_contacts(self, conn):
-        query = f"""SELECT * from {self.table};"""
+        query = f"""SELECT * from {self.table} ORDER BY Name;"""
         cur = conn.cursor()
         cur.execute(query)
         result = cur.fetchall()
@@ -56,10 +56,10 @@ class Menu:
         print(f"{args[0]} has been sucessfully added to your phonebook.\n{self.search_contact(conn, args[0])}")
 
     def search_contact(self, conn, name: str):
-        query = f"""SELECT ContactID, Name, Phone_number, Address, Email, Birthday FROM {self.table} WHERE name=?;"""
+        query = f"""SELECT ContactID, Name, Phone_number, Address, Email, Birthday FROM {self.table} WHERE name LIKE ?;"""
         cur = conn.cursor()
-        cur.execute(query, (name,))
-        result = cur.fetchone()
+        cur.execute(query, (f"%{name}%",))
+        result = cur.fetchall()
         
         f_table = PrettyTable(
             [
@@ -71,11 +71,10 @@ class Menu:
                 "Birthday"
             ]
         )
-        try:
-            f_table.add_rows([result])
+        if result:
+            f_table.add_rows(result)
             return f_table
-        except:
-            return "Contact not found."
+        return "Contact not found."
     
     def search_id(self, conn, id: int):
         query = f"""SELECT ContactID, Name, Phone_number, Address, Email, Birthday FROM {self.table} WHERE ContactID=?;"""
@@ -110,9 +109,14 @@ class Menu:
 
         values = (
             fields.get("name", ""),
+            fields.get("name", ""),
+            fields.get("phone_number", ""),
             fields.get("phone_number", ""),
             fields.get("address", ""),
+            fields.get("address", ""),
             fields.get("email", ""),
+            fields.get("email", ""),
+            fields.get("birthday", ""),
             fields.get("birthday", ""),
             fields.get("contactid", ""),
         )
@@ -180,6 +184,7 @@ Selected option: """)
                 try:
                     searched = int(input("ContactID to be updated? "))
                     if menu.search_id(conn, searched) != "Contact not found.":
+                        print(menu.search_id(conn, searched))
                         menu.update_contact(
                             conn,
                             name = input("New name? ").title(),
@@ -191,7 +196,7 @@ Selected option: """)
                         )
                         print()
                         print("Contact successfully updated.")
-                        print(menu.show_contacts(conn))
+                        print(menu.search_id(conn, searched))
                     else:
                         print("Contact not found.")
                 except ValueError:
