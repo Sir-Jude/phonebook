@@ -14,24 +14,35 @@ class Menu:
         """
         self.database = database
         self.table = table
+        self.conn = sqlite3.connect(self.database)
+    
+    
+    def cur(self) -> None:
+        """
+        Connect to the SQLite database.
 
-    def create_table(self, conn: sqlite3.Connection) -> None:
+        Returns:
+            sqlite3.Connection: The SQLite connection object.
+        """
+        cursor = self.conn.cursor()
+        return cursor    
+
+    def create_table(self) -> None:
         """
         Create the table in the database if it doesn't exist.
 
         Args:
             : sqlite3.Connection (sqlite3.Connection): The SQLite connection object.
         """
-        query = f"""CREATE TABLE IF NOT EXISTS {self.table} (
+        self.cur().execute(
+            f"""CREATE TABLE IF NOT EXISTS {self.table} (
             ContactID INTEGER PRIMARY KEY AUTOINCREMENT,
             Name VARCHAR(50),
             Phone_number VARCHAR(50),
             Address VARCHAR(100),
             Email VARCHAR(50),
             Birthday DATE
-        );"""
-        cur = conn.cursor()
-        cur.execute(query)
+        );""")
 
     def show_contacts(self, conn: sqlite3.Connection) -> PrettyTable:
         """
@@ -217,7 +228,7 @@ def main():
     menu = Menu("phone.db", "phonebook")
     option = ""
     with sqlite3.connect(menu.database) as conn:
-        menu.create_table(conn)
+        menu.create_table()
 
         while option != "x":
             system("clear")
