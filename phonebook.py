@@ -32,7 +32,6 @@ class Menu:
         );"""
         cur = conn.cursor()
         cur.execute(query)
-        conn.commit()
 
     def show_contacts(self, conn: sqlite3.Connection) -> PrettyTable:
         """
@@ -82,7 +81,6 @@ class Menu:
             VALUES (?, ?, ?, ?, ?);"""
         cur = conn.cursor()
         cur.execute(query, args)
-        conn.commit()
         print()
         print(
             f"{args[0]} has been sucessfully added to your phonebook.\n{self.search_contact(conn, args[0])}"
@@ -156,7 +154,7 @@ class Menu:
         except:
             return "Contact not found."
 
-    def update_contact(self, conn: sqlite3.Connection, **fields) -> None:
+    def update_contact(self, conn: sqlite3.Connection, **kwargs) -> None:
         """
         Update a contact in the database.
 
@@ -164,32 +162,33 @@ class Menu:
             conn (sqlite3.Connection): The SQLite connection object.
             fields (dict): The fields to update (name, phone_number, address, email, birthday, contactid).
         """
-        query = f"""UPDATE {self.table} SET
-            Name=CASE WHEN ? = '' THEN Name ELSE ? END,
-            Phone_number=CASE WHEN ? = '' THEN Phone_number ELSE ? END,
-            Address=CASE WHEN ? = '' THEN Address ELSE ? END,
-            Email=CASE WHEN ? = '' THEN Email ELSE ? END,
-            Birthday=CASE WHEN ? = '' THEN Birthday ELSE ? END
+        query = f"""UPDATE {self.table}
+            SET
+                Name=CASE WHEN ? = '' THEN Name ELSE ? END,
+                Phone_number=CASE WHEN ? = '' THEN Phone_number ELSE ? END,
+                Address=CASE WHEN ? = '' THEN Address ELSE ? END,
+                Email=CASE WHEN ? = '' THEN Email ELSE ? END,
+                Birthday=CASE WHEN ? = '' THEN Birthday ELSE ? END
             WHERE ContactID=?;"""
 
         values = (
-            fields.get("name", ""),
-            fields.get("name", ""),
-            fields.get("phone_number", ""),
-            fields.get("phone_number", ""),
-            fields.get("address", ""),
-            fields.get("address", ""),
-            fields.get("email", ""),
-            fields.get("email", ""),
-            fields.get("birthday", ""),
-            fields.get("birthday", ""),
-            fields.get("contactid", ""),
+            kwargs.get("name", ""),
+            kwargs.get("name", ""),
+            kwargs.get("phone_number", ""),
+            kwargs.get("phone_number", ""),
+            kwargs.get("address", ""),
+            kwargs.get("address", ""),
+            kwargs.get("email", ""),
+            kwargs.get("email", ""),
+            kwargs.get("birthday", ""),
+            kwargs.get("birthday", ""),
+            kwargs.get("contactid", ""),
         )
 
         cur = conn.cursor()
         try:
             cur.execute(query, values)
-            conn.commit()
+
         except:
             print("Error occurred.")
 
@@ -208,7 +207,7 @@ class Menu:
         cur = conn.cursor()
         try:
             cur.execute(query, (id,))
-            conn.commit()
+
             return "Contact successfully deleted."
         except:
             print("Error occurred.")
